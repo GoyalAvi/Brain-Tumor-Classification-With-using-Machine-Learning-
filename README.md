@@ -42,7 +42,7 @@ Ensure you have Python 3 installed. You can install all the necessary libraries 
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/your-username/brain-tumor-classification.git
+    https://github.com/GoyalAvi/Brain-Tumor-Classification-With-using-Machine-Learning-.git
     cd brain-tumor-classification
     ```
 
