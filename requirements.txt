@@ -1,0 +1,9 @@
+tensorflow>=2.12
+scikit-learn
+opencv-python
+numpy
+matplotlib
+imutils
+pytest
+# Optional, only for `--ai-explain`
+anthropic

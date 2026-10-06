@@ -119,6 +119,44 @@ accuracy = (cm[0, 0] + cm[1, 1]) / total
 print("Accuracy: {:.4f}".format(accuracy))
 ```
 
+-----
+
+## 🗺️ Brain Function Impact Map
+
+Most tumor classifiers stop at "tumor: yes". The Impact Map answers the question patients and families ask next: **which part of the brain is involved, and what does that part do?**
+
+For a single MRI image it:
+
+1. Runs the trained classifier and computes a **Grad-CAM** heatmap of where the model looked.
+2. Segments the brain and splits it into approximate regions (frontal, parietal, temporal, occipital, deep structures, pituitary/sellar region, cerebellum/brainstem) for the chosen slice view.
+3. Reports the most likely region, which side of the brain, what that region does, and which symptoms a doctor may check for, in **English or Hindi**.
+4. Optionally (`--ai-explain`) asks Claude to write a calm, family-friendly explanation based only on these results.
+
+### Usage
+
+```bash
+pip install -r requirements.txt
+
+# 1. Train once and save the model to models/
+python train.py --dataset ./brain_tumor_dataset
+
+# 2. Map a scan (writes a figure, a JSON result and a Markdown report to impact_reports/)
+python -m impact_map path/to/scan.jpg --view axial --lang hi
+
+# Optional: add an AI-written explanation (needs ANTHROPIC_API_KEY)
+python -m impact_map path/to/scan.jpg --ai-explain
+```
+
+`--view` is the slice orientation of the image: `axial` (default, viewed from above), `coronal` (from the front) or `sagittal` (from the side). Images are assumed to be in standard radiological display, where the patient's right is on the image's left.
+
+### Limitations
+
+* **Not a diagnosis.** It's an educational research tool, and it says so on every output.
+* The region mapping is **approximate**. The images are single 2D slices from different angles and positions, so regions come from simple geometric rules rather than registration to a real 3D brain atlas. Accurate mapping would need 3D scans (for example the BraTS dataset) aligned to an atlas such as MNI.
+* Grad-CAM shows where the model looked, not the exact tumor boundary. If the attention is spread out or partly outside the brain, the report marks the location as uncertain.
+
+Run the tests with `python -m pytest tests`.
+
 ## Summary
 ```
 Brain tumor classification is a highly important healthcare project in machine learning. It helps doctors identify if a brain scan shows a tumor and what type it is—benign or malignant. The dataset usually contains MRI (Magnetic Resonance Imaging) scans of brains with labels. Using these images, a deep learning model can be trained to detect tumors, which helps in faster and more accurate diagnosis.
